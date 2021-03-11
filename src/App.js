@@ -1,57 +1,80 @@
-import React, { Component } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import { Button, Form, Container, Header } from 'semantic-ui-react';
 import './App.css';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props)
+function App() {
+  const [fullName, setName] = useState('');
+  const [recurrence, setRecurrence] = useState('');
+  const [wantsEggs, setEggs] = useState('');
+  const [date, setDate] = useState('');
 
-    this.state = {
-      date: '',
-      quantity: '',
-      price: ''
-    }
+  const handleName = e => {
+    setName(e.target.value);
   }
 
-  changeHandler = (e) => {
-    this.setState({[e.target.name] : e.target.value})
+  const handleRecurrence = e => {
+    setRecurrence(e.target.value);
   }
   
-  //This is a comment
-  submitHandler = e => {
+  const handleEggs = e => {
+    setEggs(e.target.value);
+  }
+
+  const handleDate = e => {
+    setDate(e.target.value);
+  }
+
+  const handleSubmit = e => {
     e.preventDefault();
-    console.log(this.state);
   
-    axios.post('', this.state)
+    const data = {
+      fullname: fullName,
+      recurrence: recurrence,
+      eggs: wantsEggs, 
+      signupdate: date
+    };
+    
+    console.log(data);
+
+    axios.post('https://sheet.best/api/sheets/9b3475bb-d735-4c97-87c1-adba2c83555a', data)
     .then(response => {
       console.log(response);
-    })
-    this.setState({ date: '', quantity: '', price: ''})
+    }).catch(error => {
+      console.log(error.response)
+    });
+
+    setName('');
+    setRecurrence('');
+    setEggs('');
+    setDate('');
   }
 
-  render() {
-    const { date, quantity, price } = this.state;
-    return (
-      <Container fluid className="container">
-        <Header as='h1'>Sunset Ridge Farm</Header>
-        <Header as='h2'>Vegetable Box Order Form</Header>
-        <Form className="form" onSubmit={this.submitHandler}>
-          <Form.Field>
-            <label>Quantity Sold</label>
-            <input placeholder='Quantity Sold' type="text" name="quantity" value={quantity} onChange={this.changeHandler} />
-          </Form.Field>
-          <Form.Field>
-            <label>Price</label>
-            <input placeholder='Price Per Item' type="text" name="price" value={price} onChange={this.changeHandler} />
-          </Form.Field>
-          <Form.Field>
-            <label>Date</label>
-            <input placeholder='Enter the date of sale' type="date" name="date" value={date} onChange={this.changeHandler} />
-          </Form.Field>
-          <Button color="blue" type='submit'>Submit</Button>
-        </Form>
-      </Container>
-    )
-  }
-}
+  return (
+    <Container fluid className="container">
+      <Header as='h1'>Sunset Ridge Farm</Header>
+      <Header as='h2'>Vegetable Box Order Form</Header>
+      <Form className="form" onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>Name</label>
+          <input placeholder='First and Last Name' type="text" name="fullName" value={fullName} onChange={handleName} />
+        </Form.Field>
+        <Form.Field>
+          <label>Recurrence</label>
+          <input placeholder='Weekly or Bi-weekly' type="text" name="recurrence" value={recurrence} onChange={handleRecurrence} />
+        </Form.Field>
+        <Form.Field>
+          <label>Eggs?</label>
+          <input placeholder='Do you want eggs too?' type="text" name="wantsEggs" value={wantsEggs} onChange={handleEggs} />
+        </Form.Field>
+        <Form.Field>
+          <label>Date</label>
+          <input placeholder='Date' type="date" name="date" value={date} onChange={handleDate} />
+        </Form.Field>
+        <Button color="blue" type='submit'>Submit</Button>
+      </Form>
+    </Container>
+  )
+};
+
+export default App;
