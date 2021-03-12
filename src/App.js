@@ -114,21 +114,4 @@ function App() {
   )
 };
 
-function DropdownMenu() {
-  
-  function DropdownItem(props) {
-    return (
-      <a href="/#" className="menu-item">
-        {props.children}
-      </a>
-    );
-  }
-  
-  return(
-    <div className="dropdown">
-      <DropdownItem>DropdownItem</DropdownItem>
-    </div>
-  );
-};
-
 export default App;
