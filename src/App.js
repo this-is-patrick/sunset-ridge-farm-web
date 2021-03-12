@@ -56,7 +56,7 @@ function App() {
         </Form.Field>
         <Form.Field>
           <label>Phone Number</label>
-          <input placeholder='555-555-5555' type="tel" name="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={phoneNumber} onChange={handlePhone} />
+          <input placeholder='555-555-5555' type="tel" name="phoneNumber" value={phoneNumber} onChange={handlePhone} />
         </Form.Field>
         <Form.Field>
           How often would you like to receive a vegetable box?
