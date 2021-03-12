@@ -24,8 +24,6 @@ function App() {
     var today = new Date(),
             date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
 
-    console.log(date);
-
     const data = {
       name: fullName,
       phone: phoneNumber,
@@ -33,8 +31,6 @@ function App() {
       eggs: value, 
       signupdate: date
     };
-    
-    console.log(data);
 
     axios.post('https://sheet.best/api/sheets/9b3475bb-d735-4c97-87c1-adba2c83555a', data)
     .then(response => {
@@ -108,7 +104,7 @@ function App() {
             onChange={handleCheck}
           /> 
         </FormField>
-        <Button color="blue" type='submit'>Submit</Button>
+        <Button id="submitBtn" color="blue" type='submit'>Submit</Button>
       </Form>
     </Container>
   )
