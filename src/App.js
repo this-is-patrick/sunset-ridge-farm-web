@@ -1,37 +1,36 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import { Button, Form, Container, Header } from 'semantic-ui-react';
+import { Button, Form, Container, Header, FormField, Checkbox } from 'semantic-ui-react';
 import './App.css';
 
 function App() {
   const [fullName, setName] = useState('');
-  const [recurrence, setRecurrence] = useState('');
-  const [wantsEggs, setEggs] = useState('');
-  const [date, setDate] = useState('');
+  const [phoneNumber, setPhone] = useState('');
+  const [recurrence, setRecurrence] = useState(null);
+  const [value, setValue] = useState(null);
 
   const handleName = e => {
     setName(e.target.value);
   }
-
-  const handleRecurrence = e => {
-    setRecurrence(e.target.value);
+  const handlePhone = e => {
+    setPhone(e.target.value);
   }
-  
-  const handleEggs = e => {
-    setEggs(e.target.value);
-  }
-
-  const handleDate = e => {
-    setDate(e.target.value);
-  }
+  const handleRecurrence = (event, {value}) => setRecurrence(value);
+  const handleCheck = (event, {value}) => setValue(value);
 
   const handleSubmit = e => {
     e.preventDefault();
   
+    var today = new Date(),
+            date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+
+    console.log(date);
+
     const data = {
-      fullname: fullName,
+      name: fullName,
+      phone: phoneNumber,
       recurrence: recurrence,
-      eggs: wantsEggs, 
+      eggs: value, 
       signupdate: date
     };
     
@@ -45,9 +44,9 @@ function App() {
     });
 
     setName('');
-    setRecurrence('');
-    setEggs('');
-    setDate('');
+    setPhone('');
+    setRecurrence(null);
+    setValue(null);
   }
 
   return (
@@ -60,21 +59,76 @@ function App() {
           <input placeholder='First and Last Name' type="text" name="fullName" value={fullName} onChange={handleName} />
         </Form.Field>
         <Form.Field>
-          <label>Recurrence</label>
-          <input placeholder='Weekly or Bi-weekly' type="text" name="recurrence" value={recurrence} onChange={handleRecurrence} />
+          <label>Phone Number</label>
+          <input placeholder='555-555-5555' type="tel" name="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={phoneNumber} onChange={handlePhone} />
         </Form.Field>
         <Form.Field>
-          <label>Eggs?</label>
-          <input placeholder='Do you want eggs too?' type="text" name="wantsEggs" value={wantsEggs} onChange={handleEggs} />
+          How often would you like to receive a vegetable box?
         </Form.Field>
+        <FormField>
+          <Checkbox 
+            radio 
+            label='Weekly'
+            name='checkboxRadioGroup2'
+            value='weekly'
+            checked={recurrence === 'weekly'}
+            onChange={handleRecurrence}
+          /> 
+        </FormField>
+        <FormField>
+          <Checkbox 
+            radio 
+            label='Every other week'
+            name='checkboxRadioGroup2'
+            value='biweekly'
+            checked={recurrence === 'biweekly'}
+            onChange={handleRecurrence}
+          /> 
+        </FormField>
         <Form.Field>
-          <label>Date</label>
-          <input placeholder='Date' type="date" name="date" value={date} onChange={handleDate} />
+          Would you like to add a dozen eggs?
         </Form.Field>
+        <FormField>
+          <Checkbox 
+            radio 
+            label='Yes (add $5)'
+            name='checkboxRadioGroup'
+            value='yes'
+            checked={value === 'yes'}
+            onChange={handleCheck}
+          /> 
+        </FormField>
+        <FormField>
+          <Checkbox 
+            radio 
+            label='No'
+            name='checkboxRadioGroup'
+            value='no'
+            checked={value === 'no'}
+            onChange={handleCheck}
+          /> 
+        </FormField>
         <Button color="blue" type='submit'>Submit</Button>
       </Form>
     </Container>
   )
+};
+
+function DropdownMenu() {
+  
+  function DropdownItem(props) {
+    return (
+      <a href="/#" className="menu-item">
+        {props.children}
+      </a>
+    );
+  }
+  
+  return(
+    <div className="dropdown">
+      <DropdownItem>DropdownItem</DropdownItem>
+    </div>
+  );
 };
 
 export default App;
