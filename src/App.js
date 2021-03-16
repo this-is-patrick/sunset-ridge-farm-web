@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import { Button, Form, Container, Header, FormField, Checkbox } from 'semantic-ui-react';
+import { Button, Form, Container, Header, FormField, Checkbox, Message } from 'semantic-ui-react';
 import './App.css';
 
 function App() {
@@ -8,6 +8,12 @@ function App() {
   const [phoneNumber, setPhone] = useState('');
   const [recurrence, setRecurrence] = useState(null);
   const [value, setValue] = useState(null);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+  const [recurrenceError, setRecurrenceError] = useState(false);
+  const [valueError, setValueError] = useState(false);
 
   const handleName = e => {
     setName(e.target.value);
@@ -20,7 +26,51 @@ function App() {
 
   const handleSubmit = e => {
     e.preventDefault();
-  
+    let error = false;
+
+    // TODO - check for only whitespace
+    if(fullName === '') {
+      setNameError(true);
+      error = true;
+    }
+    else {
+      setNameError(false);
+    }
+    // TODO - make sure they are digits
+    if(phoneNumber.length < 10) {
+      setPhoneError(true);
+      error = true;
+    }
+    else {
+      setPhoneError(false);
+    }
+
+    if(recurrence!=='weekly' && recurrence!=='biweekly') {
+      setRecurrenceError(true);
+      error = true;
+    }
+    else {
+      setRecurrenceError(false);
+    }
+
+    if(value!=='yes' && value !=='no') {
+      setValueError(true);
+      error = true;
+    }
+    else {
+      setValueError(false);
+    }
+
+    if(error) {
+      setFormSuccess(false);
+      setFormError(true);
+      return;
+    }
+    else {
+      setFormSuccess(true);
+      setFormError(false);
+    }
+
     var today = new Date(),
             date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
 
@@ -45,19 +95,38 @@ function App() {
     setValue(null);
   }
 
+  const MessageSuccess = () => (
+    <Message
+      success
+      header='Your form has been submitted'
+    />
+  )
+
   return (
     <Container fluid className="container">
       <Header as='h1'>Sunset Ridge Farm</Header>
       <Header as='h2'>Vegetable Box Order Form</Header>
-      <Form className="form" onSubmit={handleSubmit}>
-        <Form.Field>
-          <label>Name</label>
-          <input placeholder='First and Last Name' type="text" name="fullName" value={fullName} onChange={handleName} />
-        </Form.Field>
-        <Form.Field>
-          <label>Phone Number</label>
-          <input placeholder='555-555-5555' type="tel" name="phoneNumber" value={phoneNumber} onChange={handlePhone} />
-        </Form.Field>
+      <Form className="form" success={formSuccess} error={formError} onSubmit={handleSubmit}>
+        <Form.Input
+          required
+          label="Name"
+          name="fullName"
+          placeholder="First and Last Name"
+          type="text"
+          value={fullName}
+          onChange={handleName}
+          error={nameError}
+        />
+        <Form.Input 
+          required
+          label="Phone Number"
+          name="phoneNumber"
+          placeholder="555-555-5555"
+          type="tel"
+          value={phoneNumber}
+          onChange={handlePhone}
+          error={phoneError}
+        />
         <Form.Field>
           How often would you like to receive a vegetable box?
         </Form.Field>
@@ -69,6 +138,7 @@ function App() {
             value='weekly'
             checked={recurrence === 'weekly'}
             onChange={handleRecurrence}
+            error={recurrenceError}
           /> 
         </FormField>
         <FormField>
@@ -79,6 +149,7 @@ function App() {
             value='biweekly'
             checked={recurrence === 'biweekly'}
             onChange={handleRecurrence}
+            error={recurrenceError}
           /> 
         </FormField>
         <Form.Field>
@@ -92,6 +163,7 @@ function App() {
             value='yes'
             checked={value === 'yes'}
             onChange={handleCheck}
+            error={valueError}
           /> 
         </FormField>
         <FormField>
@@ -102,9 +174,18 @@ function App() {
             value='no'
             checked={value === 'no'}
             onChange={handleCheck}
+            error={valueError}
           /> 
         </FormField>
-        <Button id="submitBtn" color="blue" type='submit'>Submit</Button>
+        <Button 
+          id="submitBtn" 
+          color="blue" 
+          type='submit'
+          disabled={ !fullName || !phoneNumber || !recurrence || !value }
+        >
+          Submit
+        </Button>
+        {(formSuccess === true) ? <MessageSuccess></MessageSuccess> : null }
       </Form>
     </Container>
   )
