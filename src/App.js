@@ -19,10 +19,26 @@ function App() {
     setName(e.target.value);
   }
   const handlePhone = e => {
-    setPhone(e.target.value);
+    setPhone(normalizePhoneNumber(e.target.value));
   }
   const handleRecurrence = (event, {value}) => setRecurrence(value);
   const handleCheck = (event, {value}) => setValue(value);
+
+  function normalizePhoneNumber(phoneNumber) {
+    if (!phoneNumber) return phoneNumber; 
+
+    const currentNumber = phoneNumber.replace(/[^\d]/g,'');
+    const cnLength = currentNumber.length;
+
+    if (cnLength < 4) {
+      return currentNumber;
+    }
+    if (cnLength < 7) {
+      return `(${currentNumber.slice(0,3)}) ${currentNumber.slice(3)}`;
+    }
+    
+    return `(${currentNumber.slice(0,3)}) ${currentNumber.slice(3,6)}-${currentNumber.slice(6,10)}`;
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -121,7 +137,7 @@ function App() {
           required
           label="Phone Number"
           name="phoneNumber"
-          placeholder="555-555-5555"
+          placeholder="(555)555-5555"
           type="tel"
           value={phoneNumber}
           onChange={handlePhone}
