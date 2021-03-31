@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css'
 
+require('dotenv').config()
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

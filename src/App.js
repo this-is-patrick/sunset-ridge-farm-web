@@ -82,10 +82,6 @@ function App() {
       setFormError(true);
       return;
     }
-    else {
-      setFormSuccess(true);
-      setFormError(false);
-    }
 
     var today = new Date(),
             date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
@@ -98,11 +94,23 @@ function App() {
       signupdate: date
     };
 
-    axios.post('https://sheet.best/api/sheets/9b3475bb-d735-4c97-87c1-adba2c83555a', data)
+    let API_ENDPOINT;
+    if (process.env.NODE_ENV === 'production') {
+      API_ENDPOINT = 'https://sheet.best/api/sheets/9b3475bb-d735-4c97-87c1-adba2c83555a'
+    }
+    else {
+      // TODO - Add dev API endpoint
+      API_ENDPOINT = 'https://sheet.best/api/sheets/9b3475bb-d735-4c97-87c1-adba2c83555a'
+    }
+    
+    axios.post(API_ENDPOINT, data)
     .then(response => {
-      console.log(response);
+      setFormSuccess(true);
+      setFormError(false);
     }).catch(error => {
       console.log(error.response)
+      setFormSuccess(false);
+      setFormError(true);
     });
 
     setName('');
@@ -115,6 +123,13 @@ function App() {
     <Message
       success
       header='Your form has been submitted'
+    />
+  )
+
+  const MessageError = () => (
+    <Message
+      error
+      header='There was an error submitting your form. Please try again later.'
     />
   )
 
@@ -201,7 +216,7 @@ function App() {
         >
           Submit
         </Button>
-        {(formSuccess === true) ? <MessageSuccess></MessageSuccess> : null }
+        {(formSuccess === true) ? <MessageSuccess></MessageSuccess> : <MessageError></MessageError> }
       </Form>
     </Container>
   )
